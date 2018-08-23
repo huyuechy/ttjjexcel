@@ -29,10 +29,11 @@ public class IndexController {
     @RequestMapping(value = "/downloadExecl", method = RequestMethod.GET)
     public void getExecl (@RequestParam("code") String code,
                          @RequestParam("sdate")String sdate,
+                          @RequestParam("num")Integer num,
                          @RequestParam("edate") String edate,HttpServletResponse response) {
         try {
             List<FundBO> fundBOList=jsoupUtil.getFundBOList(URL.replace("CODE",code).replace("SDATE",sdate).replace("EDATE",edate));
-            excelUtil.downloadExcel(fundBOList,response,code);
+            excelUtil.downloadExcel(fundBOList,response,code,num);
         } catch (Exception e) {
             e.printStackTrace();
         }

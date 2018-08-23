@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class ExcelUtil {
 
-    public void downloadExcel(List<FundBO> fundBOS, HttpServletResponse response, String code) throws Exception {
+    public void downloadExcel(List<FundBO> fundBOS, HttpServletResponse response, String code, Integer num) throws Exception {
         Collections.sort(fundBOS, new Comparator<FundBO>() {
             @Override
             public int compare(FundBO o1, FundBO o2) {
@@ -48,7 +48,7 @@ public class ExcelUtil {
                 Calendar ca2 = Calendar.getInstance();
                 ca2.setTime(fundBO.getTime());
                 if (calendar.get(Calendar.YEAR) == ca2.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == ca2.get(Calendar.MONTH)) {
-                    if (ca2.get(Calendar.DATE) == 20) {
+                    if (ca2.get(Calendar.DATE) == num) {
                         fundBOS1.add(fundBO);
                         flage = 1;
                     }
@@ -59,7 +59,7 @@ public class ExcelUtil {
                     Calendar ca2 = Calendar.getInstance();
                     ca2.setTime(fundBO.getTime());
                     if (calendar.get(Calendar.YEAR) == ca2.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == ca2.get(Calendar.MONTH)) {
-                        if (ca2.get(Calendar.DATE) > 20) {
+                        if (ca2.get(Calendar.DATE) > num) {
                             fundBOS1.add(fundBO);
                             break;
                         }
