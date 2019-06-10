@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +33,22 @@ public class IndexController {
                          @RequestParam("sdate")String sdate,
                           @RequestParam("num")Integer num,
                          @RequestParam("edate") String edate,HttpServletResponse response) {
+        response.setCharacterEncoding("UTF-8");
         try {
+            if(num>31||num<1){
+                response.setContentType("text/html;charset=utf-8");
+                response.getWriter().write("num不能大于31或小于1");
+                throw new Exception("num不能大于31或小于1");
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date startDate = sdf.parse(sdate);
+                Date endDate = sdf.parse(edate);
+            } catch (ParseException e) {
+                response.setContentType("text/html;charset=utf-8");
+                response.getWriter().write("sdate或edate格式错误");
+                throw new Exception("sdate或edate格式错误");
+            }
             List<FundBO> fundBOList=jsoupUtil.getFundBOList(URL.replace("CODE",code).replace("SDATE",sdate).replace("EDATE",edate));
             excelUtil.downloadExcel(fundBOList,response,code,num);
         } catch (Exception e) {

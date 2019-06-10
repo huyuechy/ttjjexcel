@@ -42,7 +42,7 @@ public class ExcelUtil {
         Calendar cal = Calendar.getInstance();
         cal.setTime(startDate);
         int flage = 0;
-        for (Calendar calendar = cal; calendar.get(Calendar.YEAR) < 2019; calendar.add(Calendar.MONTH, 1)) {
+        for (Calendar calendar = cal; calendar.get(Calendar.YEAR) < 2020; calendar.add(Calendar.MONTH, 1)) {
             flage = 0;
             for (FundBO fundBO : fundBOS) {
                 Calendar ca2 = Calendar.getInstance();

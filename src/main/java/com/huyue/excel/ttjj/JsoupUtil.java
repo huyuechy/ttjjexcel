@@ -21,26 +21,38 @@ public class JsoupUtil {
                     //模拟火狐浏览器
                     .userAgent("Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)")
                     .get();
+        Elements body=document.select("body");
+        String s=body.text();
+        int indexbegin=s.indexOf("pages:");
+        int indexend=s.indexOf(",curpage");
+        int page=Integer.valueOf(s.substring(indexbegin+6,indexend));
+        for (int i = 1; i <=page; i++) {
+            Document documenti= null;
+            documenti = Jsoup.connect(url+"&page="+i)
+                    //模拟火狐浏览器
+                    .userAgent("Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)")
+                    .get();
 
-        Elements main=document.select("body > table > tbody");
-        Elements sub=main.select("tr");
-        for(Element element:sub){
-            FundBO fundBO=new FundBO();
-            //日期
-            Elements data=element.select("td:nth-of-type(1)");
+            Elements maini=documenti.select("body > table > tbody");
+            Elements sub=maini.select("tr");
+            for(Element element:sub){
+                FundBO fundBO=new FundBO();
+                //日期
+                Elements data=element.select("td:nth-of-type(1)");
 
-            fundBO.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(data.text()));
+                fundBO.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(data.text()));
 
-            //单位净值
-            Elements dwjz=element.select("td:nth-of-type(2)");
+                //单位净值
+                Elements dwjz=element.select("td:nth-of-type(2)");
 
-            fundBO.setDwjz(Double.valueOf(dwjz.text()));
+                fundBO.setDwjz(Double.valueOf(dwjz.text()));
 
-            //累计净值
-            Elements ljjz=element.select("td:nth-of-type(3)");
+                //累计净值
+                Elements ljjz=element.select("td:nth-of-type(3)");
 
-            fundBO.setLjjz(Double.valueOf(ljjz.text()));
-            fundBOList.add(fundBO);
+                fundBO.setLjjz(Double.valueOf(ljjz.text()));
+                fundBOList.add(fundBO);
+            }
         }
         return fundBOList;
     }
