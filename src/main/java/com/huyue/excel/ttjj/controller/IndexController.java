@@ -35,7 +35,7 @@ public class IndexController {
                          @RequestParam("edate") String edate,HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         try {
-            if(num>31||num<1){
+            if(num>31||num<0){
                 response.setContentType("text/html;charset=utf-8");
                 response.getWriter().write("num不能大于31或小于1");
                 throw new Exception("num不能大于31或小于1");
@@ -50,7 +50,7 @@ public class IndexController {
                 throw new Exception("sdate或edate格式错误");
             }
             List<FundBO> fundBOList=jsoupUtil.getFundBOList(URL.replace("CODE",code).replace("SDATE",sdate).replace("EDATE",edate));
-            excelUtil.downloadExcel(fundBOList,response,code,num);
+            excelUtil.downloadExcel(fundBOList,response,code,num,sdate,edate);
         } catch (Exception e) {
             e.printStackTrace();
         }

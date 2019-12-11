@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class ExcelUtil {
 
-    public void downloadExcel(List<FundBO> fundBOS, HttpServletResponse response, String code, Integer num) throws Exception {
+    public void downloadExcel(List<FundBO> fundBOS, HttpServletResponse response, String code, Integer num,
+        String sdate, String edate) throws Exception {
         Collections.sort(fundBOS, new Comparator<FundBO>() {
             @Override
             public int compare(FundBO o1, FundBO o2) {
@@ -36,36 +37,44 @@ public class ExcelUtil {
             }
         });
         List<FundBO> fundBOS1 = new ArrayList<>();
-        String dateStr = "2015-06-23";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdf.parse(dateStr);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        int flage = 0;
-        for (Calendar calendar = cal; calendar.get(Calendar.YEAR) < 2020; calendar.add(Calendar.MONTH, 1)) {
-            flage = 0;
-            for (FundBO fundBO : fundBOS) {
-                Calendar ca2 = Calendar.getInstance();
-                ca2.setTime(fundBO.getTime());
-                if (calendar.get(Calendar.YEAR) == ca2.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == ca2.get(Calendar.MONTH)) {
-                    if (ca2.get(Calendar.DATE) == num) {
-                        fundBOS1.add(fundBO);
-                        flage = 1;
-                    }
-                }
-            }
-            if (flage == 0) {
+        if(num>0) {
+            String dateStr = sdate;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = sdf.parse(dateStr);
+            Date endDate = sdf.parse(edate);
+            Calendar ca3 = Calendar.getInstance();
+            ca3.setTime(endDate);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(startDate);
+            int flage = 0;
+            for (Calendar calendar = cal; calendar.get(Calendar.YEAR) < ca3.get(Calendar.YEAR) + 1; calendar.add(Calendar.MONTH, 1)) {
+                flage = 0;
                 for (FundBO fundBO : fundBOS) {
                     Calendar ca2 = Calendar.getInstance();
                     ca2.setTime(fundBO.getTime());
                     if (calendar.get(Calendar.YEAR) == ca2.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == ca2.get(Calendar.MONTH)) {
-                        if (ca2.get(Calendar.DATE) > num) {
+                        if (ca2.get(Calendar.DATE) == num) {
                             fundBOS1.add(fundBO);
-                            break;
+                            flage = 1;
+                        }
+                    }
+                }
+                if (flage == 0) {
+                    for (FundBO fundBO : fundBOS) {
+                        Calendar ca2 = Calendar.getInstance();
+                        ca2.setTime(fundBO.getTime());
+                        if (calendar.get(Calendar.YEAR) == ca2.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == ca2
+                            .get(Calendar.MONTH)) {
+                            if (ca2.get(Calendar.DATE) > num) {
+                                fundBOS1.add(fundBO);
+                                break;
+                            }
                         }
                     }
                 }
             }
+        }else {
+            fundBOS1=fundBOS;
         }
         HSSFWorkbook wb = new HSSFWorkbook();
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
